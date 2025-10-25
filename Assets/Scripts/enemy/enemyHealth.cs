@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class enemyHealth : MonoBehaviour
 {
@@ -18,15 +19,24 @@ public class enemyHealth : MonoBehaviour
     private Animator animator;
     private UnityEngine.AI.NavMeshAgent agent;
 
+    [Header("UI Settings")]
+    public Slider healthBar;
+
     [Header("Take damage Flash")]
     public float damageDuration=1f;
     public float flashInterval= 0.1f;// flash rate
     public int flashCount=8;
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currentHealth = maxHealth;
+        if (healthBar != null)
+        {
+            healthBar.minValue = 0;
+            healthBar.maxValue = maxHealth;
+            healthBar.value = currentHealth;
+        }
     }
 
     // Update is called once per frame
@@ -41,6 +51,9 @@ public class enemyHealth : MonoBehaviour
         //colldown time
         if (currentHealth <= 0) return; // if death
         currentHealth -= damage;
+        Debug.Log("enemy take damage" + currentHealth);
+        if (healthBar != null)
+            healthBar.value = currentHealth;
 
         if (currentHealth <= 0)
         {

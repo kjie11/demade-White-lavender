@@ -37,6 +37,7 @@ public class enemyMove : MonoBehaviour
         patrolCenter=transform.position;
         
         agent.autoBraking=false;
+        patrolPoint = patrolCenter;
     }
 
     // Update is called once per frame
@@ -56,7 +57,8 @@ public class enemyMove : MonoBehaviour
         
     }
     void followPlayer(){
-        animator.SetTrigger("Follow");
+        // animator.SetTrigger("Follow");
+        SafeSetTrigger("Follow");
         agent.destination=playerTransform.position +offset;
 
 
@@ -75,11 +77,13 @@ public class enemyMove : MonoBehaviour
 
         if (randomAttack == 0)
         {
-            animator.SetTrigger("Attack");
+            // animator.SetTrigger("Attack");
+            SafeSetTrigger("Attack");
         }
         else
         {
-            animator.SetTrigger("Attack2");
+            // animator.SetTrigger("Attack2");
+            SafeSetTrigger("Attack");
         }
         // player lose health
         playerHealth ph= playerTransform.GetComponent<playerHealth>();
@@ -124,4 +128,11 @@ public class enemyMove : MonoBehaviour
             agent.destination = patrolPoint;
         }
     }
+
+    //if enmey has not animator
+    void SafeSetTrigger(string triggerName)
+{
+    if (animator != null)
+        animator.SetTrigger(triggerName);
+}
 }

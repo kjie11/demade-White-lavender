@@ -35,6 +35,6 @@ public class playerHealth : MonoBehaviour
     }
     //animation for lose heath count and reduce health bar
     void takeDmageAnimation(){
-        Debug.Log("player take damaged"+currentHealth);
+        // Debug.Log("player take damaged"+currentHealth);
     }
 }
