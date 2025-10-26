@@ -98,6 +98,20 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
+        [Header("Self-define paticle")]
+        public GameObject runParticle;
+        // public GameObject walkPaticle;
+        // public GameObject leftWalkParticle;
+        // public GameObject rightWalkParticle;
+        // public float walkEffectHold = 0.5f;
+        // private float _walkEffectTTL = 0f;    
+        // private bool _useLeft = true;  
+public GameObject leftWalkParticle;
+public GameObject rightWalkParticle;
+
+public float walkEffectHold = 0.9f;
+private float _walkTTL = 0f;      // 本次脚步效果持续时间
+private bool _useLeft = true;     // 本次用左脚，下一次切换
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
 #endif
@@ -159,6 +173,35 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+    //         if (_walkEffectTTL > 0f)
+    // {
+    //     _walkEffectTTL -= Time.deltaTime;
+    //     if (!walkPaticle.activeSelf) walkPaticle.SetActive(true);
+    // }
+    // else
+    // {
+    //     if (walkPaticle.activeSelf) walkPaticle.SetActive(false);
+    // }
+    if (_walkTTL > 0f)
+{
+    _walkTTL -= Time.deltaTime;
+
+    if (_useLeft)
+    {
+        if (leftWalkParticle && !leftWalkParticle.activeSelf) leftWalkParticle.SetActive(true);
+        if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
+    }
+    else
+    {
+        if (rightWalkParticle && !rightWalkParticle.activeSelf) rightWalkParticle.SetActive(true);
+        if (leftWalkParticle && leftWalkParticle.activeSelf) leftWalkParticle.SetActive(false);
+    }
+}
+else
+{
+    if (leftWalkParticle && leftWalkParticle.activeSelf) leftWalkParticle.SetActive(false);
+    if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
+}
         }
 
         private void LateUpdate()
@@ -277,6 +320,21 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
+
+            //run particle
+            if (runParticle != null)
+            {
+                if (Grounded && _speed >= SprintSpeed * 0.8f)
+                {
+                    if (!runParticle.activeSelf)
+                        runParticle.SetActive(true);
+                }
+                else
+                {
+                    if (runParticle.activeSelf)
+                        runParticle.SetActive(false);
+                }
+            }
         }
 
         private void JumpAndGravity()
@@ -375,10 +433,14 @@ namespace StarterAssets
             {
                 if (FootstepAudioClips.Length > 0)
                 {
+
                     var index = Random.Range(0, FootstepAudioClips.Length);
                     AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+
                 }
             }
+           _walkTTL = walkEffectHold; // 开始这一脚的显示时间
+    _useLeft = !_useLeft;      // ✅ 下次换另一只脚
         }
 
         private void OnLand(AnimationEvent animationEvent)
