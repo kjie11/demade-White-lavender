@@ -42,14 +42,21 @@ public class enemyHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
     // whenm enemy be attacked
     public void takeDamage(float damage){
         //loss health
         // takedamage animation
         //colldown time
-        if (currentHealth <= 0) return; // if death
+        if (currentHealth <= 0)
+        {
+            Die();
+            Debug.Log("enemy die");
+        }
         currentHealth -= damage;
         Debug.Log("enemy take damage" + currentHealth);
         if (healthBar != null)
@@ -58,6 +65,7 @@ public class enemyHealth : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+            Debug.Log("enemy die");
         }
         else
         {
@@ -80,8 +88,13 @@ public class enemyHealth : MonoBehaviour
 
     void Die(){
         currentHealth = 0;
-        animator.SetTrigger("Die");
-        agent.isStopped = true;
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+        
+        // agent.isStopped = true;
+        Debug.Log("in the die");
         Destroy(gameObject, 3f); // enemy will disappear after 3f when died
     }
 }

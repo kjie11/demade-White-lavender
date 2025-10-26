@@ -1,5 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 public class enemyMove : MonoBehaviour
 {
     private NavMeshAgent agent;
@@ -16,11 +18,12 @@ public class enemyMove : MonoBehaviour
     private Vector3 patrolCenter;
     private Vector3 patrolPoint; // ramdom get the point, make the enemy move around in the patrol area
      public float patrolWaitTime = 1f; // patrol and wait a time to change patrol point
-    private float waitTimer = 0f;  
+    private float waitTimer = 0f;
+    public GameObject anchor;
 
     [Header("Attack")]
-    public float attackDistance=1f;
-    public float attackCooldown = 1.2f; 
+    public float attackDistance=2f;
+    public float attackCooldown = 3f; 
     private float nextAttackTime = 0f;
     public float attackDamageCount=30f;
 
@@ -38,6 +41,7 @@ public class enemyMove : MonoBehaviour
         
         agent.autoBraking=false;
         patrolPoint = patrolCenter;
+        anchor.SetActive(false);
     }
 
     // Update is called once per frame
@@ -58,6 +62,7 @@ public class enemyMove : MonoBehaviour
     }
     void followPlayer(){
         // animator.SetTrigger("Follow");
+         anchor.SetActive(true);
         SafeSetTrigger("Follow");
         agent.destination=playerTransform.position +offset;
 
@@ -103,6 +108,7 @@ public class enemyMove : MonoBehaviour
     }
     void Patrol(){
         // animator.SetTrigger("Walking");
+         anchor.SetActive(false);
         agent.destination=patrolPoint;
 
         if (!agent.pathPending && agent.remainingDistance < 0.5f)

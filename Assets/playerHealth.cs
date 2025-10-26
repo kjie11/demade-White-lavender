@@ -1,15 +1,24 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class playerHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
     private float currentHealth;
     private Animator animator;
+     [Header("UI Settings")]
+    public Slider healthBar;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currentHealth=maxHealth;
-        animator=GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        if (healthBar != null)
+        {
+            healthBar.minValue = 0;
+            healthBar.maxValue = maxHealth;
+            healthBar.value = currentHealth;
+        }
     }
 
     // Update is called once per frame
@@ -25,7 +34,8 @@ public class playerHealth : MonoBehaviour
         }
         else
         {
-            currentHealth-=damage;
+            currentHealth -= damage;
+            
             takeDmageAnimation();
         }
     }
@@ -36,5 +46,7 @@ public class playerHealth : MonoBehaviour
     //animation for lose heath count and reduce health bar
     void takeDmageAnimation(){
         // Debug.Log("player take damaged"+currentHealth);
+        if (healthBar != null)
+            healthBar.value = currentHealth;
     }
 }

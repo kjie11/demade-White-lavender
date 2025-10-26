@@ -75,15 +75,20 @@ public class playerController : MonoBehaviour
             if(hitOnlyNearest){
                 Collider nearest=null;
                 float bestSqr=float.MaxValue;
-                foreach(var c in hits){
-                    if (!IsFacingTarget(c.transform, center)) continue;
-                    float sqr=(c.transform.position-center).sqrMagnitude;
-                    if(sqr<bestSqr){
-                        bestSqr=sqr;
-                        nearest=c;
-                    }
+            foreach (var c in hits)
+            {
+                if (!IsFacingTarget(c.transform, center)) continue;
+                float sqr = (c.transform.position - center).sqrMagnitude;
+                if (sqr < bestSqr)
+                {
+                    bestSqr = sqr;
+                    nearest = c;
                 }
+            }
+            if (nearest != null)
+            {
                 nearest.GetComponent<enemyHealth>()?.takeDamage(attackDamage);
+            }
             }
             else{
                 foreach(var c in hits)
