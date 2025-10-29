@@ -15,6 +15,7 @@ public class enemyDrop : MonoBehaviour
     public float floatDistance = 0.5f;
     public float floatDuration = 0.5f;
      public float stayDuration = 0.5f;  
+     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -51,6 +52,7 @@ public class enemyDrop : MonoBehaviour
 
 
     }
+    //ai write pupup function
     System.Collections.IEnumerator DamageNumberPopup()
     {
         Vector3 startPos = originalPos;
@@ -75,7 +77,7 @@ public class enemyDrop : MonoBehaviour
     float fadeTime = 0.8f;          // 淡出持续时间（可调）
     float fadeElapsed = 0f;
     Vector3 fadeStartPos = damageNumberText.transform.localPosition;
-    Vector3 fadeEndPos = fadeStartPos + Vector3.up * 1f; // 再上升一点
+    Vector3 fadeEndPos = fadeStartPos + Vector3.up * 10f; // 再上升一点
 
     Color startColor = damageTmp.color;
 
@@ -103,7 +105,7 @@ public class enemyDrop : MonoBehaviour
 
     }
     
-    void ODestroy()
+    void OnDestroy()
     {
         if (enemyHealth != null)
         {

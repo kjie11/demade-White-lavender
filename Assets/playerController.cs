@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class playerController : MonoBehaviour
 {
@@ -33,7 +34,8 @@ public class playerController : MonoBehaviour
     public bool requireInFront = true;                 
     
 
-    
+    //exhausted bar event
+    public event Action OnAttack;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -62,7 +64,7 @@ public class playerController : MonoBehaviour
    
     void Attack(){
             animator.SetTrigger("Attack");
-
+             OnAttack?.Invoke(); //notify exhaustedBar
             Vector3 center=transform.position;
             Collider[] hits=Physics.OverlapSphere(center,attackRange, enemyLayer);
 
