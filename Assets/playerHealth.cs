@@ -6,8 +6,11 @@ public class playerHealth : MonoBehaviour
     public float maxHealth = 100f;
     private float currentHealth;
     private Animator animator;
-     [Header("UI Settings")]
+    [Header("UI Settings")]
     public Slider healthBar;
+
+    [Header("UI HealthBar")]
+    public Image fillImage;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,7 +27,7 @@ public class playerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        fillImage.fillAmount = currentHealth / maxHealth; // UI HealthBar initialize
     }
     public void TakeDmage(float damage){
         if (currentHealth <= 0) return;
