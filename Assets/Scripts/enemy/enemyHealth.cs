@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using System;
 
 public class enemyHealth : MonoBehaviour
 {
@@ -25,7 +26,12 @@ public class enemyHealth : MonoBehaviour
     [Header("Take damage Flash")]
     public float damageDuration=1f;
     public float flashInterval= 0.1f;// flash rate
-    public int flashCount=8;
+    public int flashCount = 8;
+
+    //Enemy drop parameters //notify enemyDrop script, and flash, drop health number animation
+    public event Action<float> OnTakeDamage; // event name is OntakeDmage, float is health drop number
+    public event Action OnDeath;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -61,11 +67,12 @@ public class enemyHealth : MonoBehaviour
         Debug.Log("enemy take damage" + currentHealth);
         if (healthBar != null)
             healthBar.value = currentHealth;
+        OnTakeDamage.Invoke(damage);
 
         if (currentHealth <= 0)
         {
             Die();
-            Debug.Log("enemy die");
+            OnDeath.Invoke();
         }
         else
         {
