@@ -42,7 +42,7 @@ public class enemyDrop : MonoBehaviour
             damageNumberText.transform.Rotate(0, 180f, 0);
         }
     }
-    void HandleTakeDamage(float damage)
+    void HandleTakeDamage(enemyHealth enemy,float damage)
     {
         Debug.Log("enemy get damage!!");
         // damageNumber animation

@@ -48,16 +48,18 @@ public class playerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-            if(Input.GetMouseButtonDown(0)&& Time.time >= nextAttackTime){
-                Attack();
-                nextAttackTime = Time.time + attackCooldown;
-            }
+
+        if (Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
+        {
+            Attack();
+            nextAttackTime = Time.time + attackCooldown;
+        }
            
-            if(Input.GetKeyDown(backRollKey)&&!isRolling&&Time.time>=nextRollTime){
-                // StartCoroutine(BackRoll());
-                BackRoll();
-            }
+           //有问题 先不要后翻滚
+            // if(Input.GetKeyDown(backRollKey)&&!isRolling&&Time.time>=nextRollTime){
+            //     // StartCoroutine(BackRoll());
+            //     BackRoll();
+            // }
     }
 
 
@@ -107,31 +109,26 @@ public class playerController : MonoBehaviour
         Gizmos.color = new Color(1, 0.5f, 0, 0.25f);
         Gizmos.DrawSphere(transform.position, attackRange);
     }
-    //go backward and defend
+    
     void BackRoll()
-    {
-        Debug.Log("In the back roll");
-        isRolling = true;
-        nextRollTime = Time.time + backRollCooldown;
-        Debug.Log("player defend");
-        animator.SetTrigger("BackRoll");
-        //player position go backward
-        Vector3 startPos = transform.position;
-        Vector3 dir = -transform.forward;
-        Vector3 endPos = startPos + dir * backRollDistance;
+{
+    Debug.Log("In the back roll");
+    isRolling = true;
+    nextRollTime = Time.time + backRollCooldown;
 
-        // //ai :update the player position smoothly
-        //  float elapsed = 0f;
-        // while (elapsed < backRollDuration)
-        // {
-        //     elapsed += Time.deltaTime;
-        //     float t = Mathf.Clamp01(elapsed / backRollDuration);
-        //     transform.position = Vector3.Lerp(startPos, endPos, t);
-        //     yield return null;
-        // }
+        animator.SetBool("back", true);
+        animator.SetBool("FreeFall", false);
+    animator.applyRootMotion = true;
 
-        isRolling = false;
-    }
+    StartCoroutine(ResetBackRollAfterDelay(backRollDuration));
+}
+
+private IEnumerator ResetBackRollAfterDelay(float delay)
+{
+    yield return new WaitForSeconds(delay);
+    animator.SetBool("back", false);
+    isRolling = false;
+}
     bool IsFacingTarget(Transform target, Vector3 center)
     {
         Vector3 toTarget = target.position - center;

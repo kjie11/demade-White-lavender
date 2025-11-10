@@ -13,7 +13,7 @@ public class playerHealth : MonoBehaviour
     [Header("UI HealthBar")]
     public Image fillImage;
 
-    
+    public event Action<float> OnTakeDamage; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,6 +25,10 @@ public class playerHealth : MonoBehaviour
             healthBar.maxValue = maxHealth;
             healthBar.value = currentHealth;
         }
+         if (UIManager.Instance != null)
+    {
+        UIManager.Instance.RegisterPlayer(this);
+    }
     }
 
     // Update is called once per frame
@@ -41,8 +45,9 @@ public class playerHealth : MonoBehaviour
         else
         {
             currentHealth -= damage;
-            
+
             takeDmageAnimation();
+            OnTakeDamage?.Invoke(damage);
         }
     }
     void Die(){

@@ -27,8 +27,15 @@ public class ExhaustedBar : MonoBehaviour
     [Header("Exhausted UI")]
     public GameObject exhaustedText;
 
-    public float floatDuration = 1.5f; 
+    public float floatDuration = 1.5f;
     private bool isShowing = false; // if exhasuted text is showm, not show again
+    public AnimationCurve moveCurve;
+    public AnimationCurve rotateCurve;
+    public float moveHeight = 1.5f;     
+    public float startRotation = 90f;
+    public float endRotation = 0f;
+    private Vector3 startPos;
+    public GameObject exhastedPrefab;
     void Start()
     {
          exhaustedText.SetActive(false);
@@ -44,6 +51,7 @@ public class ExhaustedBar : MonoBehaviour
             _playerController.OnAttack += HandleExhausted;
 
         }
+        startPos = exhaustedText.transform.position;
         
     }
 
@@ -64,7 +72,7 @@ public class ExhaustedBar : MonoBehaviour
         currentExhaust -= attackCost;
         if (currentExhaust <= 0)
         {
-            StartCoroutine(ShowExhaustedText());
+            StartCoroutine(ExhaustAnimation());
         }
         currentExhaust = Mathf.Max(0f, currentExhaust); //ai
         if (exhaustedBar != null)
@@ -81,9 +89,32 @@ public class ExhaustedBar : MonoBehaviour
         if (isShowing) yield break;
         isShowing = true;
         exhaustedText.SetActive(true);
+        // GameObject clone = Instantiate(exhastedPrefab, transform.position, Quaternion.identity);
         yield return new WaitForSeconds(floatDuration);
+        // Destroy(clone);
+
+
+
+
         exhaustedText.SetActive(false);
         isShowing = false;
+    }
+    IEnumerator ExhaustAnimation()
+    {
+         exhaustedText.SetActive(true);
+         float t = 0f;
+        while (t < floatDuration)
+        {
+            float n = t / floatDuration;
+            float moveY = moveCurve.Evaluate(n) * moveHeight;
+            exhaustedText.transform.position = startPos + Vector3.up * moveY;
+            float angle = Mathf.Lerp(startRotation, endRotation, rotateCurve.Evaluate(n));
+            exhaustedText.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+        exhaustedText.SetActive(false);
     }
     void OnDestroy()
     {

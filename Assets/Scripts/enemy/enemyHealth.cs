@@ -29,7 +29,7 @@ public class enemyHealth : MonoBehaviour
     public int flashCount = 8;
 
     //Enemy drop parameters //notify enemyDrop script, and flash, drop health number animation
-    public event Action<float> OnTakeDamage; // event name is OntakeDmage, float is health drop number
+    public event Action<enemyHealth,float> OnTakeDamage; // event name is OntakeDmage, float is health drop number
     public event Action OnDeath;
 
 
@@ -43,6 +43,11 @@ public class enemyHealth : MonoBehaviour
             healthBar.maxValue = maxHealth;
             healthBar.value = currentHealth;
         }
+        //register takedamageEvent for UIManager
+         if (UIManager.Instance != null)
+    {
+        UIManager.Instance.RegisterEnemy(this);
+    }
     }
 
     // Update is called once per frame
@@ -58,6 +63,7 @@ public class enemyHealth : MonoBehaviour
         //loss health
         // takedamage animation
         //colldown time
+        OnTakeDamage.Invoke(this,damage);
         if (currentHealth <= 0)
         {
             Die();
@@ -67,7 +73,7 @@ public class enemyHealth : MonoBehaviour
         Debug.Log("enemy take damage" + currentHealth);
         if (healthBar != null)
             healthBar.value = currentHealth;
-        OnTakeDamage.Invoke(damage);
+        
 
         if (currentHealth <= 0)
         {
