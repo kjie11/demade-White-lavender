@@ -30,7 +30,7 @@ public class enemyHealth : MonoBehaviour
 
     //Enemy drop parameters //notify enemyDrop script, and flash, drop health number animation
     public event Action<enemyHealth,float> OnTakeDamage; // event name is OntakeDmage, float is health drop number
-    public event Action OnDeath;
+    public event Action<enemyHealth> OnDeath;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -78,7 +78,7 @@ public class enemyHealth : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
-            OnDeath.Invoke();
+            
         }
         else
         {
@@ -105,9 +105,10 @@ public class enemyHealth : MonoBehaviour
         {
             animator.SetTrigger("Die");
         }
-        
+
         // agent.isStopped = true;
         Debug.Log("in the die");
-        Destroy(gameObject, 3f); // enemy will disappear after 3f when died
+        OnDeath?.Invoke(this); 
+        Destroy(gameObject); // enemy will disappear after 3f when died
     }
 }

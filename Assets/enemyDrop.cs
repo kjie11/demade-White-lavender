@@ -1,10 +1,10 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+//跳字效果
 public class enemyDrop : MonoBehaviour
 {
-    
+
     public GameObject[] dropItems;
     [Range(0f, 1f)] public float dropChance = 0.5f;
     private enemyHealth enemyHealth;
@@ -14,8 +14,8 @@ public class enemyDrop : MonoBehaviour
     public TextMeshProUGUI damageTmp;
     public float floatDistance = 0.5f;
     public float floatDuration = 0.5f;
-     public float stayDuration = 0.5f;  
-     
+    public float stayDuration = 0.5f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -28,7 +28,7 @@ public class enemyDrop : MonoBehaviour
         damageNumberText.SetActive(false);
         originalPos = damageNumberText.transform.localPosition;
 
-       
+
     }
 
     // Update is called once per frame
@@ -42,7 +42,7 @@ public class enemyDrop : MonoBehaviour
             damageNumberText.transform.Rotate(0, 180f, 0);
         }
     }
-    void HandleTakeDamage(enemyHealth enemy,float damage)
+    void HandleTakeDamage(enemyHealth enemy, float damage)
     {
         Debug.Log("enemy get damage!!");
         // damageNumber animation
@@ -73,29 +73,29 @@ public class enemyDrop : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(stayDuration);
-         // --- 第三阶段：淡出 + 缓慢上升 ---
-    float fadeTime = 0.8f;          // 淡出持续时间（可调）
-    float fadeElapsed = 0f;
-    Vector3 fadeStartPos = damageNumberText.transform.localPosition;
-    Vector3 fadeEndPos = fadeStartPos + Vector3.up * 10f; // 再上升一点
+        // --- 第三阶段：淡出 + 缓慢上升 ---
+        float fadeTime = 0.8f;          // 淡出持续时间（可调）
+        float fadeElapsed = 0f;
+        Vector3 fadeStartPos = damageNumberText.transform.localPosition;
+        Vector3 fadeEndPos = fadeStartPos + Vector3.up * 10f; // 再上升一点
 
-    Color startColor = damageTmp.color;
+        Color startColor = damageTmp.color;
 
-    while (fadeElapsed < fadeTime)
-    {
-        fadeElapsed += Time.deltaTime;
-        float t = fadeElapsed / fadeTime;
+        while (fadeElapsed < fadeTime)
+        {
+            fadeElapsed += Time.deltaTime;
+            float t = fadeElapsed / fadeTime;
 
-        // 上升
-        damageNumberText.transform.localPosition = Vector3.Lerp(fadeStartPos, fadeEndPos, t);
+            // 上升
+            damageNumberText.transform.localPosition = Vector3.Lerp(fadeStartPos, fadeEndPos, t);
 
-        // 渐隐
-        Color c = startColor;
-        c.a = Mathf.Lerp(1f, 0f, t);
-        damageTmp.color = c;
+            // 渐隐
+            Color c = startColor;
+            c.a = Mathf.Lerp(1f, 0f, t);
+            damageTmp.color = c;
 
-        yield return null;
-    }
+            yield return null;
+        }
         // 结束后复位并隐藏
         damageNumberText.transform.localPosition = originalPos;
         damageNumberText.transform.localRotation = Quaternion.identity;
@@ -104,7 +104,7 @@ public class enemyDrop : MonoBehaviour
 
 
     }
-    
+
     void OnDestroy()
     {
         if (enemyHealth != null)
@@ -113,7 +113,7 @@ public class enemyDrop : MonoBehaviour
             enemyHealth.OnDeath -= HandleDeath;
         }
     }
-    void HandleDeath()
+    void HandleDeath(enemyHealth enemy)
     {
         //爆炸效果
     }

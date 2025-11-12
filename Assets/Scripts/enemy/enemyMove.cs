@@ -27,8 +27,14 @@ public class enemyMove : MonoBehaviour
     private float nextAttackTime = 0f;
     public float attackDamageCount=30f;
 
-
+    [Header("Audio")]
+    public AudioClip alertSound;          
+    public float alertSoundCooldown = 5f; // 防止频繁播放
+    private float lastAlertTime = -999f;
+    private bool playerInRange = false;   // 用来检测进入/离开范围状态
+    private AudioSource audioSource;      // 声音播放器
     
+
 
     Vector3 offset=Vector3.back;
 
@@ -42,24 +48,52 @@ public class enemyMove : MonoBehaviour
         agent.autoBraking=false;
         patrolPoint = patrolCenter;
         anchor.SetActive(false);
+         // ✅ 初始化 AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
-        if (distanceToPlayer<attackDistance&& Time.time >= nextAttackTime){
-                attack();
-                nextAttackTime = Time.time + attackCooldown;
+        // 🎯 检测是否刚进入巡逻范围
+        bool isInRangeNow = distanceToPlayer < patrolRadius;
+        if (isInRangeNow && !playerInRange)
+        {
+            OnPlayerEnterRange();
         }
-        else if(distanceToPlayer<patrolRadius){
+        playerInRange = isInRangeNow;
+
+        if (distanceToPlayer < attackDistance && Time.time >= nextAttackTime)
+        {
+            attack();
+            nextAttackTime = Time.time + attackCooldown;
+        }
+        else if (distanceToPlayer < patrolRadius)
+        {
             followPlayer();
         }
-        else{
+        else
+        {
             Patrol();
         }
-        
+
     }
+     // 🟡 当玩家第一次进入巡逻半径
+    void OnPlayerEnterRange()
+    {
+        if (alertSound != null && Time.time - lastAlertTime > alertSoundCooldown)
+        {
+            audioSource.PlayOneShot(alertSound);
+            lastAlertTime = Time.time;
+        }
+        Debug.Log("⚠️ Player entered patrol range!");
+    }
+
+   
     void followPlayer(){
         // animator.SetTrigger("Follow");
          anchor.SetActive(true);
