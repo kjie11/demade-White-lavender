@@ -14,6 +14,7 @@ public class playerHealth : MonoBehaviour
     public Image fillImage;
 
     public event Action<float> OnTakeDamage; 
+    public DamagePostProcess damagePostProcess;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -38,7 +39,7 @@ public class playerHealth : MonoBehaviour
     }
     public void TakeDmage(float damage){
         if (currentHealth <= 0) return;
-         if (currentHealth <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -48,6 +49,10 @@ public class playerHealth : MonoBehaviour
 
             takeDmageAnimation();
             OnTakeDamage?.Invoke(damage);
+        }
+        if (currentHealth <= 30)
+        {
+            damagePostProcess.TriggerDamageEffect();
         }
     }
     void Die(){

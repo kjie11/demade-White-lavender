@@ -31,7 +31,7 @@ public class ExhaustedBar : MonoBehaviour
     private bool isShowing = false; // if exhasuted text is showm, not show again
     public AnimationCurve moveCurve;
     public AnimationCurve rotateCurve;
-    public float moveHeight = 1.5f;     
+    public float moveHeight = 2.5f;     
     public float startRotation = 90f;
     public float endRotation = 0f;
     private Vector3 startPos;
@@ -89,6 +89,7 @@ public class ExhaustedBar : MonoBehaviour
         if (isShowing) yield break;
         isShowing = true;
         exhaustedText.SetActive(true);
+        exhaustedText.transform.position = _playerController.transform.position + new Vector3(0f, 0.5f, 0f);
         // GameObject clone = Instantiate(exhastedPrefab, transform.position, Quaternion.identity);
         yield return new WaitForSeconds(floatDuration);
         // Destroy(clone);
@@ -99,23 +100,54 @@ public class ExhaustedBar : MonoBehaviour
         exhaustedText.SetActive(false);
         isShowing = false;
     }
-    IEnumerator ExhaustAnimation()
-    {
-         exhaustedText.SetActive(true);
-         float t = 0f;
-        while (t < floatDuration)
-        {
-            float n = t / floatDuration;
-            float moveY = moveCurve.Evaluate(n) * moveHeight;
-            exhaustedText.transform.position = startPos + Vector3.up * moveY;
-            float angle = Mathf.Lerp(startRotation, endRotation, rotateCurve.Evaluate(n));
-            exhaustedText.transform.rotation = Quaternion.Euler(0, 0, angle);
+    // IEnumerator ExhaustAnimation()
+    // {
+    //      exhaustedText.SetActive(true);
+    //      float t = 0f;
+    //     while (t < floatDuration)
+    //     {
+    //         float n = t / floatDuration;
+    //         float moveY = moveCurve.Evaluate(n) * moveHeight;
+    //         exhaustedText.transform.position = startPos + Vector3.up * moveY;
+    //         float angle = Mathf.Lerp(startRotation, endRotation, rotateCurve.Evaluate(n));
+    //         exhaustedText.transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            t += Time.deltaTime;
-            yield return null;
-        }
-        exhaustedText.SetActive(false);
+    //         t += Time.deltaTime;
+    //         yield return null;
+    //     }
+    //     exhaustedText.SetActive(false);
+    // }
+    IEnumerator ExhaustAnimation()
+{
+    exhaustedText.SetActive(true);
+    float t = 0f;
+
+    while (t < floatDuration)
+    {
+        float n = t / floatDuration;
+
+        // 基于玩家位置更新
+        Vector3 basePos = _playerController.transform.position;
+        float moveY = moveCurve.Evaluate(n) * moveHeight;
+        exhaustedText.transform.position = basePos + new Vector3(0f, moveY, 0f);
+
+        // 先让文字朝向摄像机
+        Vector3 camDir = exhaustedText.transform.position - Camera.main.transform.position;
+        Quaternion lookRot = Quaternion.LookRotation(camDir);
+
+        // 在看向摄像机的基础上，增加Z轴旋转动画
+        float angle = Mathf.Lerp(startRotation, endRotation, rotateCurve.Evaluate(n));
+        Quaternion spinRot = Quaternion.Euler(0, 0, angle);
+
+        exhaustedText.transform.rotation = lookRot * spinRot; // ✅ 合并两个旋转
+
+        t += Time.deltaTime;
+        yield return null;
     }
+
+    exhaustedText.SetActive(false);
+}
+
     void OnDestroy()
     {
         if (_playerController != null)

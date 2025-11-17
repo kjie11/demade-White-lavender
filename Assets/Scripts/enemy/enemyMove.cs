@@ -4,7 +4,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 public class enemyMove : MonoBehaviour
 {
-    private NavMeshAgent agent;
+    protected NavMeshAgent agent;
     public Transform playerTransform;
     [Header("Animation")]
     private Animator animator;
@@ -36,7 +36,7 @@ public class enemyMove : MonoBehaviour
     
 
 
-    Vector3 offset=Vector3.back;
+    protected Vector3 offset=Vector3.back;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -94,7 +94,7 @@ public class enemyMove : MonoBehaviour
     }
 
    
-    void followPlayer(){
+   protected virtual void followPlayer(){
         // animator.SetTrigger("Follow");
          anchor.SetActive(true);
         SafeSetTrigger("Follow");
@@ -170,7 +170,7 @@ public class enemyMove : MonoBehaviour
     }
 
     //if enmey has not animator
-    void SafeSetTrigger(string triggerName)
+    protected void SafeSetTrigger(string triggerName)
 {
     if (animator != null)
         animator.SetTrigger(triggerName);
