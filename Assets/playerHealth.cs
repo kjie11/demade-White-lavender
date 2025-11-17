@@ -54,6 +54,10 @@ public class playerHealth : MonoBehaviour
         {
             damagePostProcess.TriggerDamageEffect();
         }
+        else
+        {
+            damagePostProcess.recover();
+        }
     }
     void Die(){
         animator.SetTrigger("Die");
