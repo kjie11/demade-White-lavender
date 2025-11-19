@@ -2,57 +2,39 @@ using UnityEngine;
 
 public class playerAttack : StateMachineBehaviour
 {
-     public AudioClip attackSound;
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    public AudioClip attackSound;
+     [Header("TrailRenderer")]
+    // public TrailRenderer swordTrail;
+    [HideInInspector] public TrailRenderer trail;
 
-    // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
-
-    // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
-
-    // OnStateMove is called right after Animator.OnAnimatorMove()
-    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that processes and affects root motion
-    //}
-
-    // OnStateIK is called right after Animator.OnAnimatorIK()
-    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that sets up animation IK (inverse kinematics)
-    //}
-
-
-    // public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    // {
-    //     if (attackSound != null && AudioManager.Instance != null)
-    //     {
-    //         AudioManager.Instance.PlaySound(attackSound);
-    //     }
-    // }
+    
+     public void SetTrail(TrailRenderer t)
+    {
+        trail = t;
+    }
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-{
-    Debug.Log("Attack state entered!");
+    {
+        Debug.Log("Attack state entered!");
 
-    if (attackSound != null && AudioManager.Instance != null)
-    {
-        AudioManager.Instance.PlaySound(attackSound);
+        if (attackSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(attackSound);
+
+        }
+        else
+        {
+            Debug.LogWarning("attackSound or AudioManager.Instance is null!");
+        }
+         if (trail != null)
+            trail.emitting = true;
+            
     }
-    else
+ override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.LogWarning("attackSound or AudioManager.Instance is null!");
+       if (trail != null)
+            trail.emitting = false;
+
+        
     }
-}
 
 }

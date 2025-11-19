@@ -40,7 +40,7 @@ public class EnemyBoss : enemyMove
 
     private System.Collections.IEnumerator JumpToPlayer(Vector3 startPos, Vector3 targetPos)
     {
-        Debug.Log("boss jumping");
+        
         float elapsed = 0f;
 
         while (elapsed < jumpDuration)

@@ -31,18 +31,26 @@ public class playerController : MonoBehaviour
     //check if player face to enemy
      [Header("Facing Constraint")]
     [Range(0f, 180f)] public float attackAngle = 120f; 
-    public bool requireInFront = true;                 
-    
+    public bool requireInFront = true;
+
 
     //exhausted bar event
     public event Action OnAttack;
+    [Header("Knife trail effect setting")]
+     public TrailRenderer swordTrail;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
         // characterController=GetComponent<CharacterController>();
-        animator=GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        //set the knife trail effect render
+        var behaviours = animator.GetBehaviours<playerAttack>();
+        foreach (var b in behaviours)
+        {
+            b.SetTrail(swordTrail);
+        }
     }
 
     // Update is called once per frame

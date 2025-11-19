@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSound: {fileID: 8300000, guid: aceeae83fdfdddf459ed52d3fad17075, type: 3}
+  trail: {fileID: 0}
 --- !u!1102 &-1645763842379584696
 AnimatorState:
   serializedVersion: 6

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Globalization;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -16,6 +17,9 @@ public class UIManager : MonoBehaviour
     public GameObject coinPrefab;  
       public int minCoins = 3;
     public int maxCoins = 6;
+
+    // [Header("knife tail effect")]
+    // public TrailRenderer trail;
 
     void Awake()
     {
@@ -186,7 +190,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-private IEnumerator HandleExplosionAndDrop(Vector3 pos)
+    private IEnumerator HandleExplosionAndDrop(Vector3 pos)
     {
         // 💥 1️⃣ 生成你的爆炸球
         GameObject explosion = Instantiate(explosionPrefab, pos, Quaternion.identity);
@@ -207,34 +211,45 @@ private IEnumerator HandleExplosionAndDrop(Vector3 pos)
         // ⏳ 等待爆炸结束
         yield return new WaitUntil(() => exploded);
 
-       int count = Random.Range(minCoins, maxCoins + 1);
+        int count = Random.Range(minCoins, maxCoins + 1);
 
-for (int i = 0; i < count; i++)
-{
-    // ✅ 初始位置：敌人周围 0.5m 范围
-    Vector2 randomOffset = Random.insideUnitCircle * 1f;
-    Vector3 spawnPos = pos + new Vector3(randomOffset.x, 0.3f, randomOffset.y);
+        for (int i = 0; i < count; i++)
+        {
+            // ✅ 初始位置：敌人周围 0.5m 范围
+            Vector2 randomOffset = Random.insideUnitCircle * 1f;
+            Vector3 spawnPos = pos + new Vector3(randomOffset.x, 0.3f, randomOffset.y);
 
-    GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
+            GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
 
-    Rigidbody rb = coin.GetComponent<Rigidbody>();
-    if (rb != null)
-    {
-        // ✅ 随机喷射方向（略带上抛角度）
-        Vector3 dir = new Vector3(randomOffset.x* Random.Range(1f, 1.6f), Random.Range(0.8f, 1.2f), randomOffset.y).normalized;
+            Rigidbody rb = coin.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // ✅ 随机喷射方向（略带上抛角度）
+                Vector3 dir = new Vector3(randomOffset.x * Random.Range(1f, 1.6f), Random.Range(0.8f, 1.2f), randomOffset.y).normalized;
 
-        // ✅ 向外 & 向上喷射力
-        float force = Random.Range(1f, 3f);
-        rb.AddForce(dir * force, ForceMode.Impulse);
+                // ✅ 向外 & 向上喷射力
+                float force = Random.Range(1f, 3f);
+                rb.AddForce(dir * force, ForceMode.Impulse);
 
-        // ✅ 加一点随机旋转力，让金币飞旋
-        rb.AddTorque(Random.insideUnitSphere * 4f, ForceMode.Impulse);
+                // ✅ 加一点随机旋转力，让金币飞旋
+                rb.AddTorque(Random.insideUnitSphere * 4f, ForceMode.Impulse);
 
-        // ✅ 可选：添加随机角度朝向
-        coin.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-    }
-}
+                // ✅ 可选：添加随机角度朝向
+                coin.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+            }
+        }
         Debug.Log($"💎 Dropped {count} coins after explosion.");
     }
 
+//     public void StartTrail()
+// {
+//     if (trail != null)
+//         trail.emitting = true;
+// }
+
+// public void StopTrail()
+// {
+//     if (trail != null)
+//         trail.emitting = false;
+// }
 }
