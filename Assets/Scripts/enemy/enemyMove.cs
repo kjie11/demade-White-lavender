@@ -102,7 +102,7 @@ public class enemyMove : MonoBehaviour
 
 
     }
-    void attack(){
+    protected virtual void attack(){
         //enemy stop and face to player
         agent.isStopped = true;
         Vector3 look = playerTransform.position - transform.position;

@@ -77,13 +77,15 @@ public class playerController : MonoBehaviour
              OnAttack?.Invoke(); //notify exhaustedBar
             Vector3 center=transform.position;
             Collider[] hits=Physics.OverlapSphere(center,attackRange, enemyLayer);
+            // Collider[] hits = Physics.OverlapSphere(center, attackRange);
+
 
         if (hits.Length == 0)
         {
             Debug.Log("hits =0");
             return;
         }
-            
+            Debug.Log("hit is not zero");
             if(hitOnlyNearest){
                 Collider nearest=null;
                 float bestSqr=float.MaxValue;
@@ -100,6 +102,7 @@ public class playerController : MonoBehaviour
             if (nearest != null)
             {
                 nearest.GetComponent<enemyHealth>()?.takeDamage(attackDamage);
+                nearest.GetComponent<StaticEnemyHealth>()?.TakeDamage(attackDamage);
             }
             }
             else{
@@ -107,6 +110,7 @@ public class playerController : MonoBehaviour
             {
                 if (!IsFacingTarget(c.transform, center)) continue;
                  c.GetComponent<enemyHealth>()?.takeDamage(attackDamage);
+                 c.GetComponent<StaticEnemyHealth>()?.TakeDamage(attackDamage);
             }
                
             }

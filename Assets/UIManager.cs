@@ -49,6 +49,40 @@ public class UIManager : MonoBehaviour
         enemy.OnTakeDamage -= HandleEnemyTakeDamage;
         enemy.OnDeath -= HandleEnemyDeath;
     }
+    //static enemy
+    public void RegisterStaticEnemy(StaticEnemyHealth enemy)
+    {
+        enemy.OnTakeDamage += HandleStaticEnemyTakeDamage;
+        enemy.OnDeath += HandleStaticEnemyDeath;
+    }
+
+    private void HandleStaticEnemyDeath(StaticEnemyHealth enemy)
+    {
+         if (enemy == null) return;
+        Vector3 pos = enemy.transform.position;
+        StartCoroutine(HandleExplosionAndDrop(pos));
+    }
+
+    private void HandleStaticEnemyTakeDamage(StaticEnemyHealth enemy, float damage)
+    {
+        if (enemy != null)
+        {
+            Renderer rend = enemy.GetComponentInChildren<Renderer>();
+            if (rend != null)
+            {
+                // StartCoroutine(FlashMaterial(rend, Color.red, 0.15f));
+                StartCoroutine(FlashMaterial(rend, 0.6f, 2));
+            }
+
+
+        }
+    }
+
+    public void UnregisterStaticEnemy(StaticEnemyHealth enemy)
+    {
+        enemy.OnTakeDamage -= HandleStaticEnemyTakeDamage;
+        enemy.OnDeath -= HandleStaticEnemyDeath;
+    }
 
     private void HandlePlayerTakeDamage(float damage)
     {
@@ -87,25 +121,7 @@ public class UIManager : MonoBehaviour
 
     }
 
-    // ✅ 敌人死亡时触发
-    // private void HandleEnemyDeath(enemyHealth enemy)
-    // {
-    //     Debug.Log("Enemy died! Show effects or play animation here.");
-    //     // 获取dead enemy
-    //     // enemyHealth enemy = FindObjectOfType<enemyHealth>();
-    //     if (enemy != null)
-    //     {
-    //         Renderer rend = enemy.GetComponentInChildren<Renderer>();
-    //         if (rend != null)
-    //         {
-    //             // StartCoroutine(FlashMaterial(rend, Color.red, 0.15f));
-    //             StartCoroutine(FlashMaterial(rend, 0.4f, 6));
-    //         }
-
-
-    //     }
-    //     DropItem(enemy.transform.position);
-    // }
+   
 
      private void HandleEnemyDeath(enemyHealth enemy)
     {
