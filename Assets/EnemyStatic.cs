@@ -7,7 +7,10 @@ public class EnemyStatic : MonoBehaviour
     public GameObject playerObj;
     [Header("shooting Attack Settings")]
     public GameObject projectilePrefab;   
-    public Transform firePoint;           
+    public Transform firePoint;   
+    public Transform firePoint2; 
+    public Transform firePoint3;      
+
     public float projectileSpeed = 12f;
     [Header("Attack")]
     public float attackDistance=2f;
@@ -33,6 +36,9 @@ public class EnemyStatic : MonoBehaviour
 public Transform cannonPivot;  // 上下旋转
 // public Transform firePoint;    // 炮口
 public string playerTag = "Player"; //玩家对于static enemy的更大的collider,no used
+[Header("Projectile Material Random")]
+public Material materialA;
+public Material materialB;
 
     
     
@@ -78,22 +84,7 @@ public string playerTag = "Player"; //玩家对于static enemy的更大的collid
         RotateCannonVertical();
     }
     }
-    //  void OnCollisionEnter(Collision collision)
-    // {
-    //     // 如果撞到的是玩家
-    //     if (collision.collider.CompareTag(playerTag))
-    //     {
-    //         // 获取玩家生命组件
-    //         playerHealth ph = collision.collider.GetComponent<playerHealth>();
-    //         if (ph != null)
-    //         {
-    //             ph.TakeDmage(attackDamageCount);
-    //         }
-    //     }
-
-    //     // 销毁炮弹
-    //     Destroy(gameObject);
-    // }
+   
     private void OnPlayerEnterRange()
     {
         if (alertSound != null && Time.time - lastAlertTime > alertSoundCooldown)
@@ -105,59 +96,7 @@ public string playerTag = "Player"; //玩家对于static enemy的更大的collid
         Debug.Log("Player entered patrol range!");
     }
 
-//     void attack()
-//     {
-//         Debug.Log("in static attack");
-//         Vector3 look = playerTransform.position - transform.position;
-//         // look.y = 0f;
-//         if (look.sqrMagnitude > 0.001f)
-//         {
-//             transform.rotation = Quaternion.LookRotation(look);
-//         }
-//         // playerHealth ph = playerTransform.GetComponent<playerHealth>();
-//         // if (ph != null)
-//         // {
-//         //     ph.TakeDmage(attackDamageCount); //todo : random damage account
-//         // }
-//         ShootProjectile();
 
-//     }
-//   private void ShootProjectile()
-// {
-//     if (projectilePrefab == null || firePoint == null)
-//         return;
-
-//     GameObject proj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-
-//     Rigidbody rb = proj.GetComponent<Rigidbody>();
-
-//     if (rb != null)
-//         {
-//         // // 玩家脚底位置
-//         // Vector3 footPoint = playerObj.transform.position;
-//         // // footPoint.y -= 1.3f; // 根据你的模型调整 (通常 -1 ~ -1.3)
-
-//         //     // 关键！！！不能水平化方向！！
-//         //     Vector3 dir = (footPoint - firePoint.position).normalized;
-//         //   proj.transform.rotation = Quaternion.LookRotation(dir);
-
-//         // rb.AddForce(dir * projectileSpeed, ForceMode.Impulse);
-//        Vector3 footPoint = playerObj.transform.position;
-// footPoint.y -= 1.3f;
-
-// Vector3 dir = (footPoint - firePoint.position);
-
-// // ⭐⭐⭐ 强制让方向更往下（关键！）
-// dir.y = dir.y * 2f;   // 往下 2 倍斜率，你可调 1.5、2、3
-
-// dir = dir.normalized;
-
-// proj.transform.rotation = Quaternion.LookRotation(dir);
-
-// rb.AddForce(dir * projectileSpeed, ForceMode.Impulse);
-
-//     }
-// }
 void RotateBodyHorizontal()
 {
     Vector3 dir = playerTransform.position - body.position;
@@ -179,15 +118,49 @@ void ShootProjectile()
         return;
 
     GameObject proj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+    GameObject proj2 = Instantiate(projectilePrefab, firePoint2.position, firePoint2.rotation);
+    GameObject proj3 = Instantiate(projectilePrefab, firePoint3.position, firePoint3.rotation);
+    ApplyRandomMaterial(proj);
+    ApplyRandomMaterial(proj2);
+    ApplyRandomMaterial(proj3);
     Projectile p = proj.GetComponent<Projectile>();
+    Projectile p2 = proj2.GetComponent<Projectile>();
+    Projectile p3 = proj3.GetComponent<Projectile>();
     p.player = playerObj;  // <-- 动态注入，永远不会丢失！
+    p2.player = playerObj;
+    p3.player = playerObj;
 
     Rigidbody rb = proj.GetComponent<Rigidbody>();
+    Rigidbody rb2 = proj2.GetComponent<Rigidbody>();
+    Rigidbody rb3 = proj3.GetComponent<Rigidbody>();
     if (rb != null)
         rb.AddForce(firePoint.forward * projectileSpeed, ForceMode.Impulse);
+        // rb2.AddForce(firePoint2.forward * projectileSpeed, ForceMode.Impulse);
+        // rb3.AddForce(firePoint.forward * projectileSpeed, ForceMode.Impulse);
+        Vector3 dir2 = (playerTransform.position - firePoint2.position).normalized;
+        Vector3 dir3 = (playerTransform.position - firePoint3.position).normalized;
+        rb2.AddForce(dir2 * projectileSpeed, ForceMode.Impulse);
+         rb3.AddForce(dir3 * projectileSpeed, ForceMode.Impulse);
+
+        
+
 }
 
-void attack()
+   void ApplyRandomMaterial(GameObject proj)
+{
+    if (materialA == null || materialB == null) return;
+
+    Renderer rend = proj.GetComponent<Renderer>();
+    if (rend == null) return;
+
+    // 随机选材质
+    Material chosen = (UnityEngine.Random.value > 0.5f) ? materialA : materialB;
+
+    // 使用新材质
+    rend.material = chosen;
+}
+
+    void attack()
 {
     RotateBodyHorizontal();
     RotateCannonVertical();
