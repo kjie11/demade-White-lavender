@@ -15,7 +15,9 @@ public class playerHealth : MonoBehaviour
 
     public event Action<float> OnTakeDamage; 
     public DamagePostProcess damagePostProcess;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
+    //notify UI manger to update pausemenu
+    public static System.Action<float> OnHealthChanged;
     void Start()
     {
         currentHealth=maxHealth;
@@ -46,7 +48,7 @@ public class playerHealth : MonoBehaviour
         else
         {
             currentHealth -= damage;
-
+            OnHealthChanged?.Invoke(currentHealth);
             takeDmageAnimation();
             OnTakeDamage?.Invoke(damage);
         }

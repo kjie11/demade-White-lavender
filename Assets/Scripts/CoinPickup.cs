@@ -20,6 +20,8 @@ public class CoinPickup : MonoBehaviour
     //show find coin canvas
     public GameObject findCoinCanvasPrefab;
 
+    public static event System.Action OnCoinCollected; //notify UI
+
     void Start()
     {
         
@@ -52,7 +54,7 @@ public class CoinPickup : MonoBehaviour
 // );
             Debug.Log("distance" +distance);
 
-            // 🟡 当接近到指定距离时触发拾取
+            // 当接近到指定距离时触发拾取
             if (distance <= pickupDistance)
             {
                 CollectCoin();
@@ -84,7 +86,7 @@ public class CoinPickup : MonoBehaviour
             Canvas mainCanvas = FindObjectOfType<Canvas>();
             if (mainCanvas != null)
                 popup.transform.SetParent(mainCanvas.transform, false);
-
+            OnCoinCollected?.Invoke();
             Destroy(popup, 1f); 
         }
 

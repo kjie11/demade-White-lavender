@@ -33,6 +33,20 @@ public class playerController : MonoBehaviour
     [Range(0f, 180f)] public float attackAngle = 120f; 
     public bool requireInFront = true;
 
+    //choose weapon
+        public enum WeaponType
+    {
+        Knife,      // 原来的近战武器
+        ThrowBall   // 新增的投掷球
+    }
+    [Header("Weapon Settings")]
+public WeaponType currentWeapon = WeaponType.Knife;
+[Header("Throw Ball Settings")]
+public GameObject ballPrefab;
+public Transform throwPoint; 
+public float throwForce = 20f;
+
+
 
     //exhausted bar event
     public event Action OnAttack;
@@ -59,7 +73,17 @@ public class playerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
         {
-            Attack();
+            if (currentWeapon == WeaponType.Knife)
+            {
+                
+                Attack();
+            }
+            else if (currentWeapon == WeaponType.ThrowBall)
+            {
+                
+                ThrowBall();
+            }
+            
             nextAttackTime = Time.time + attackCooldown;
         }
            
@@ -71,7 +95,27 @@ public class playerController : MonoBehaviour
     }
 
 
-   
+   void ThrowBall()
+{
+    animator.SetTrigger("Throw"); // 播放投掷动画（你已有）
+
+    // 投掷动作延迟出球（可选）
+    StartCoroutine(DelayedThrow());
+}
+
+IEnumerator DelayedThrow()
+{
+    yield return new WaitForSeconds(0.2f); // 与动画同步
+
+    GameObject ball = Instantiate(ballPrefab, throwPoint.position, throwPoint.rotation);
+    // Rigidbody rb = ball.GetComponent<Rigidbody>();
+
+    // if (rb != null)
+    // {
+    //     rb.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+    // }
+    ball.GetComponent<ThrowBall>().Throw(transform.forward, throwForce);
+}
     void Attack(){
             animator.SetTrigger("Attack");
              OnAttack?.Invoke(); //notify exhaustedBar

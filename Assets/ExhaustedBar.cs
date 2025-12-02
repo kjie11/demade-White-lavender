@@ -36,6 +36,10 @@ public class ExhaustedBar : MonoBehaviour
     public float endRotation = 0f;
     private Vector3 startPos;
     public GameObject exhastedPrefab;
+
+    //notify UI manger to update pausemenu
+    public static System.Action<float> OnStaminaChanged;
+
     void Start()
     {
          exhaustedText.SetActive(false);
@@ -62,6 +66,7 @@ public class ExhaustedBar : MonoBehaviour
         {
             currentExhaust += regenPerSecond * Time.deltaTime;
             currentExhaust = Mathf.Min(currentExhaust, maxExhaust);
+            OnStaminaChanged?.Invoke(currentExhaust);
         }
         exhaustedBar.fillAmount = currentExhaust / maxExhaust;
     }

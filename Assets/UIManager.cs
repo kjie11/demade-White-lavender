@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -18,6 +19,17 @@ public class UIManager : MonoBehaviour
       public int minCoins = 3;
     public int maxCoins = 6;
 
+    [Header("Coin UI")]
+     public TextMeshProUGUI coinText;
+    private int coinCount = 0;
+     private Coroutine coinDisplayRoutine;
+
+    [Header("pause mene")]
+    public TextMeshProUGUI healthPause;
+    public TextMeshProUGUI staminaPause;
+    public TextMeshProUGUI coinPause;
+
+
     // [Header("knife tail effect")]
     // public TrailRenderer trail;
 
@@ -25,6 +37,47 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
     }
+
+    //collect coin
+    private void OnEnable()
+    {
+        CoinPickup.OnCoinCollected += AddCoin;
+        ExhaustedBar.OnStaminaChanged += UpdateStamina;
+        playerHealth.OnHealthChanged += UpdateHealth;
+    }
+
+    private void UpdateStamina(float obj)
+    {
+        staminaPause.text = obj.ToString("0");
+    }
+    private void UpdateHealth(float obj)
+    {
+        healthPause.text = obj.ToString("0");
+    }
+
+
+    private void OnDisable()
+    {
+        CoinPickup.OnCoinCollected -= AddCoin;
+    }
+
+    private void AddCoin()
+    {
+        coinCount++;
+        coinText.text = "Coins: " + coinCount;
+        coinText.gameObject.SetActive(true);
+        coinPause.text=coinCount.ToString();
+         if (coinDisplayRoutine != null)
+        StopCoroutine(coinDisplayRoutine);
+
+    //启动新的 3 秒隐藏协程
+    coinDisplayRoutine = StartCoroutine(HideCoinUIAfterDelay());
+    }
+    private IEnumerator HideCoinUIAfterDelay()
+{
+    yield return new WaitForSeconds(3f);
+    coinText.gameObject.SetActive(false);
+}
 
     public void RegisterPlayer(playerHealth player)
     {
