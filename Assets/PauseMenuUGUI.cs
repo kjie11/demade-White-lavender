@@ -42,4 +42,19 @@ public class PauseMenuUGUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;  // ）
         Cursor.visible = false;
     }
+
+    public void PauseFromDialogue()
+    {
+        Time.timeScale = 0f;   
+        isPaused = true;
+        Cursor.lockState = CursorLockMode.None;    
+        Cursor.visible = true;
+    }
+    public void ResumeFromDialogue()
+    {
+        Time.timeScale = 1f;                                 // 
+        isPaused = false;
+        Cursor.lockState = CursorLockMode.Locked;  // ）
+        Cursor.visible = false;
+    }
 }

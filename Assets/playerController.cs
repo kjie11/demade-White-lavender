@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+// using System.Numerics;
 
 public class playerController : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class playerController : MonoBehaviour
      [Header("Facing Constraint")]
     [Range(0f, 180f)] public float attackAngle = 120f; 
     public bool requireInFront = true;
+
+    
 
     //choose weapon
         public enum WeaponType
@@ -88,10 +91,10 @@ public float throwForce = 20f;
         }
            
            //有问题 先不要后翻滚
-            // if(Input.GetKeyDown(backRollKey)&&!isRolling&&Time.time>=nextRollTime){
-            //     // StartCoroutine(BackRoll());
-            //     BackRoll();
-            // }
+            if(Input.GetKeyDown(backRollKey)&&!isRolling&&Time.time>=nextRollTime){
+                // StartCoroutine(BackRoll());
+                BackRoll();
+            }
     }
 
 
@@ -168,23 +171,39 @@ IEnumerator DelayedThrow()
     
     void BackRoll()
 {
-    Debug.Log("In the back roll");
+    
     isRolling = true;
     nextRollTime = Time.time + backRollCooldown;
+        animator.SetBool("Jump", false);
+        animator.SetTrigger("Backflip");
+        // animator.SetBool("FreeFall", false);
+    // animator.applyRootMotion = true;
 
-        animator.SetBool("back", true);
-        animator.SetBool("FreeFall", false);
-    animator.applyRootMotion = true;
-
-    StartCoroutine(ResetBackRollAfterDelay(backRollDuration));
+    StartCoroutine(BackRollMovement());
 }
 
-private IEnumerator ResetBackRollAfterDelay(float delay)
-{
-    yield return new WaitForSeconds(delay);
-    animator.SetBool("back", false);
-    isRolling = false;
-}
+private IEnumerator BackRollMovement()
+    {
+        float elapsed =0f;
+        Vector3 startPos=transform.position;
+        Vector3 endPos=startPos-transform.forward*backRollDistance;
+        while (elapsed < backRollDuration)
+        {
+            float t=elapsed/backRollDuration;
+            transform.position=Vector3.Lerp(startPos,endPos,t);
+            elapsed+=Time.deltaTime;
+            yield return null;
+        }
+        transform.position=endPos;
+        isRolling=false;
+    }
+
+// private IEnumerator ResetBackRollAfterDelay(float delay)
+// {
+//     yield return new WaitForSeconds(delay);
+    
+//     isRolling = false;
+// }
     bool IsFacingTarget(Transform target, Vector3 center)
     {
         Vector3 toTarget = target.position - center;

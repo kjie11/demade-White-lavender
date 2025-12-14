@@ -99,6 +99,8 @@ namespace StarterAssets
         private int _animIDMotionSpeed;
 
         [Header("Self-define paticle")]
+
+        public  GameObject ribbleEffect;
         public GameObject runParticle;
         // public GameObject walkPaticle;
         // public GameObject leftWalkParticle;
@@ -189,7 +191,9 @@ private bool _useLeft = true;     // 本次用左脚，下一次切换
     if (_useLeft)
     {
         if (leftWalkParticle && !leftWalkParticle.activeSelf) leftWalkParticle.SetActive(true);
+        // ribbleEffect.SetActive(true);
         if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
+        //  ribbleEffect.SetActive(false);
     }
     else
     {

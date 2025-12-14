@@ -1,37 +1,32 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using System;
+
 public class WeaponMenuManager : MonoBehaviour
 {
-    // 请将所有武器项的根对象（例如：item1, item2, item3...）拖入这个列表
     public List<GameObject> weaponItems;
+    
+    public GameObject knife;
 
     private int currentIndex = 0;
-    public enum WeaponType
-{
-    Knife,
-    Ball
-}
-public WeaponType currentWeapon = WeaponType.Knife;
-public playerController player;
 
-public GameObject knife;
+    public event Action<GameManager.WeaponType> onWeaponChanged;
 
-
-    void Start()
+    private void OnEnable()
     {
+        // get the status from gamemanager
+        SyncFromGameManager();
         UpdateSelectionVisuals();
     }
 
     void Update()
     {
-        // 按 A 键（左移）
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha1))
         {
-            Navigate(-1); 
+            Navigate(-1);
         }
-        // 按 D 键（右移）
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.Alpha2))
         {
             Navigate(1);
         }
@@ -41,64 +36,55 @@ public GameObject knife;
     {
         int newIndex = currentIndex + direction;
 
-        // 确保索引在列表范围内
         if (newIndex >= 0 && newIndex < weaponItems.Count)
         {
             currentIndex = newIndex;
             UpdateSelectionVisuals();
+            ApplyWeapon(); 
         }
     }
 
-    /// <summary>
-    /// 根据当前索引显示或隐藏边框
-    /// </summary>
     void UpdateSelectionVisuals()
     {
         for (int i = 0; i < weaponItems.Count; i++)
         {
-            GameObject currentWeaponItem = weaponItems[i];
-            
-            // ❗ 使用 Transform.Find 通过名称查找子对象 "currentSelect"
-            // 确保你的所有武器项中，边框父物体都叫 "currentSelect"
-            Transform borderTransform = currentWeaponItem.transform.Find("currentSelect"); 
-
-            if (borderTransform == null)
+            Transform border = weaponItems[i].transform.Find("currentSelect");
+            if (border != null)
             {
-                Debug.LogError("Weapon Item " + currentWeaponItem.name + " is missing the 'currentSelect' child object.");
-                continue; 
-            }
-
-            // 获取边框父物体
-            GameObject borderParent = borderTransform.gameObject;
-
-            if (i == currentIndex)
-            {
-                // 如果是当前选中的，显示整个边框父物体
-                borderParent.SetActive(true);
-            }
-            else
-            {
-                // 如果不是当前选中的，隐藏整个边框父物体
-                borderParent.SetActive(false);
+                border.gameObject.SetActive(i == currentIndex);
             }
         }
-         UpdateWeaponType();
     }
 
-    void UpdateWeaponType()
-{
-    if (currentIndex == 0)
+    void ApplyWeapon()
+    {
+        if (currentIndex == 0)
         {
-            player.currentWeapon = playerController.WeaponType.Knife;
+            GameManager.Instance.SetWeapon(GameManager.WeaponType.Knife);
+            
             knife.SetActive(true);
+            onWeaponChanged?.Invoke(GameManager.WeaponType.Knife); //notify gamemanager and update the current weapon
         }
-        
-    else if (currentIndex == 1)
+        else if (currentIndex == 1)
         {
-            player.currentWeapon = playerController.WeaponType.ThrowBall;
+            GameManager.Instance.SetWeapon(GameManager.WeaponType.ThrowBall);
+            
             knife.SetActive(false);
+            onWeaponChanged?.Invoke(GameManager.WeaponType.ThrowBall);//notify gamemanager and update the current weapon
         }
-        
-}
+    }
 
+    void SyncFromGameManager()
+    {
+        switch (GameManager.Instance.currentWeapon)
+        {
+            case GameManager.WeaponType.Knife:
+                currentIndex = 0;
+                break;
+
+            case GameManager.WeaponType.ThrowBall:
+                currentIndex = 1;
+                break;
+        }
+    }
 }

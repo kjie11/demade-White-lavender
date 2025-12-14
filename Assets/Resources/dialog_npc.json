@@ -1,0 +1,20 @@
+{
+  "start": "line1",
+  "nodes": [
+    { "id": "line1", "text": "Little brother, I feel so sick.", "next": "line2" },
+    { "id": "line2", "text": "I feel so cold but also warm.", "next": "line3" },
+    { "id": "line3", "text": "My condition is getting worse.", "next": "line4" },
+    { "id": "line4", "text": "Please help me...", "next": "line5" },
+    { "id": "line5", "text": "I heard a tea recipe could help.", "next": "line6" },
+    { "id": "line6", "text": "Ingredients are very difficult to obtain.", "next": "line7" },
+    { "id": "line7", "text": "But could you please find them for me?", "next": "line8" },
+    { "id": "line8", "text": "Fresh frog serum, white lavender...", "next": "line9" },
+    { "id": "line9", "text": "I believe in you. You can do anything.", "next": "line10" },
+    {
+      "id": "line10",
+      "text": "But before you go, here is a wooden sword. Please hurry.",
+      "next": null,
+      "reward": "wood_sword"
+    }
+  ]
+}

@@ -48,10 +48,12 @@ public class UIManager : MonoBehaviour
 
     private void UpdateStamina(float obj)
     {
+         obj = Mathf.Max(0f, obj);
         staminaPause.text = obj.ToString("0");
     }
     private void UpdateHealth(float obj)
     {
+         obj = Mathf.Max(0f, obj);
         healthPause.text = obj.ToString("0");
     }
 
