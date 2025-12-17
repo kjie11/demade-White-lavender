@@ -12,9 +12,14 @@
     { "id": "line9", "text": "I believe in you. You can do anything.", "next": "line10" },
     {
       "id": "line10",
-      "text": "But before you go, here is a wooden sword. Please hurry.",
-      "next": null,
+      "text": "But before you go, here is a wooden sword.",
+      "next": "line11",
       "reward": "wood_sword"
+    },
+{
+      "id": "line11",
+      "text": "Please hurry.",
+      "next": null
     }
   ]
 }

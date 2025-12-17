@@ -7,7 +7,7 @@ public class enemyMove : MonoBehaviour
     protected NavMeshAgent agent;
     public Transform playerTransform;
     [Header("Animation")]
-    private Animator animator;
+    protected Animator animator;
     
 
     [Header("Movement")]
@@ -15,7 +15,7 @@ public class enemyMove : MonoBehaviour
 
     [Header("Patrol Settings")]
     public float patrolRadius=5f;
-    private Vector3 patrolCenter;
+    protected Vector3 patrolCenter;
     private Vector3 patrolPoint; // ramdom get the point, make the enemy move around in the patrol area
      public float patrolWaitTime = 1f; // patrol and wait a time to change patrol point
     private float waitTimer = 0f;
@@ -39,7 +39,7 @@ public class enemyMove : MonoBehaviour
     protected Vector3 offset=Vector3.back;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
          animator=GetComponent<Animator>();
         agent=GetComponent<NavMeshAgent>();
@@ -56,7 +56,7 @@ public class enemyMove : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
         // 🎯 检测是否刚进入巡逻范围
@@ -157,7 +157,7 @@ public class enemyMove : MonoBehaviour
 
     }
 
-    void SetNewPatrolPoint(){
+    protected void SetNewPatrolPoint(){
         Vector3 randomPoint=Random.insideUnitSphere*patrolRadius; // ai: how to get random point
         randomPoint+=patrolCenter;
         NavMeshHit hit; //ai

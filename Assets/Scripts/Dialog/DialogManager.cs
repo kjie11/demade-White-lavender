@@ -27,6 +27,7 @@ public class DialogueManager : MonoBehaviour
     public GameObject NPCNameText;
     public GameObject topBar;
     public GameObject bottomBar;
+    public GameObject spaceHint;
 
     [Header("Pause")]
     public PauseMenuUGUI pauseMenu;
@@ -42,12 +43,26 @@ public class DialogueManager : MonoBehaviour
     private bool isTyping;
     private string currentSentence;
 
+    [Header("Audio")]
+    public AudioClip dialogueVoiceClip;   // 胡言乱语 / NPC说话音效
+    private AudioSource audioSource;
+
     void Start()
     {
         topBar.SetActive(false);
         bottomBar.SetActive(false);
         NPCNameText.SetActive(false);
+        spaceHint.SetActive(false);
         dialogueText.text = "";
+
+        
+   
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
     }
 
     void Update()
@@ -60,10 +75,14 @@ public class DialogueManager : MonoBehaviour
                 StopCoroutine(typingCoroutine);
                 typingCoroutine = null;
             }
+            if (audioSource.isPlaying)
+                audioSource.Stop();
+
 
             dialogueText.text = currentSentence;
             isTyping = false;
         }
+        
     }
 
     
@@ -77,6 +96,7 @@ public class DialogueManager : MonoBehaviour
         topBar.SetActive(true);
         bottomBar.SetActive(true);
         NPCNameText.SetActive(true);
+        spaceHint.SetActive(true);
 
         pauseMenu.PauseFromDialogue();
 
@@ -138,6 +158,21 @@ public class DialogueManager : MonoBehaviour
         isTyping = true;
         currentSentence = sentence;
         dialogueText.text = "";
+        if (dialogueVoiceClip != null)
+    {
+        float typingDuration = sentence.Length * typeSpeed;
+        float clipDuration = dialogueVoiceClip.length;
+
+        audioSource.clip = dialogueVoiceClip;
+        audioSource.time = 0f;
+        audioSource.Play();
+
+        // 如果音效比打字长，定时停止
+        if (clipDuration > typingDuration)
+        {
+            Invoke(nameof(StopDialogueAudio), typingDuration);
+        }
+    }
 
         foreach (char letter in sentence)
         {
@@ -148,7 +183,11 @@ public class DialogueManager : MonoBehaviour
         isTyping = false;
     }
 
-    
+    void StopDialogueAudio()
+{
+    if (audioSource.isPlaying)
+        audioSource.Stop();
+}
     void EndDialogue()
     {
         Debug.Log("end dialog");
@@ -156,6 +195,7 @@ public class DialogueManager : MonoBehaviour
         NPCNameText.SetActive(false);
         topBar.SetActive(false);
         bottomBar.SetActive(false);
+        spaceHint.SetActive(false);
 
         pauseMenu.ResumeFromDialogue();
         isPlaying = false;

@@ -184,18 +184,43 @@ IEnumerator DelayedThrow()
 
 private IEnumerator BackRollMovement()
     {
-        float elapsed =0f;
-        Vector3 startPos=transform.position;
-        Vector3 endPos=startPos-transform.forward*backRollDistance;
-        while (elapsed < backRollDuration)
-        {
-            float t=elapsed/backRollDuration;
-            transform.position=Vector3.Lerp(startPos,endPos,t);
-            elapsed+=Time.deltaTime;
-            yield return null;
-        }
-        transform.position=endPos;
-        isRolling=false;
+        // float elapsed =0f;
+        // Vector3 startPos=transform.position;
+        // Vector3 endPos=startPos-transform.forward*backRollDistance;
+        // while (elapsed < backRollDuration)
+        // {
+        //     float t=elapsed/backRollDuration;
+        //     transform.position=Vector3.Lerp(startPos,endPos,t);
+        //     elapsed+=Time.deltaTime;
+        //     yield return null;
+        // }
+        // transform.position=endPos;
+        // isRolling=false;
+
+        float elapsed = 0f;
+    Vector3 startPos = transform.position;
+
+    // 1️⃣ 以镜头方向为基准
+    Vector3 camForward = Camera.main.transform.forward;
+    camForward.y = 0f;               // 不上下翻
+    camForward.Normalize();
+
+    Vector3 rollDir = -camForward;   // 镜头正后方
+    Vector3 endPos = startPos + rollDir * backRollDistance;
+
+    // 2️⃣ 让角色面向翻滚方向（可选，但强烈推荐）
+    // transform.rotation = Quaternion.LookRotation(rollDir);
+
+    while (elapsed < backRollDuration)
+    {
+        float t = elapsed / backRollDuration;
+        transform.position = Vector3.Lerp(startPos, endPos, t);
+        elapsed += Time.deltaTime;
+        yield return null;
+    }
+
+    transform.position = endPos;
+    isRolling = false;
     }
 
 // private IEnumerator ResetBackRollAfterDelay(float delay)
