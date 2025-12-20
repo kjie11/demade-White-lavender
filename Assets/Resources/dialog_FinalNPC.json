@@ -1,0 +1,37 @@
+{
+  "start": "line1",
+  "nodes": [
+    {
+      "id": "line1",
+      "text": "Traveler... I need 20 coins.",
+      "next": "checkCoins"
+    },
+
+    {
+      "id": "checkCoins",
+      "text": "#CHECK_COINS_2#",
+      "requireCoins": 2,
+      "next": "giveWhiteLavender"
+    },
+
+    {
+      "id": "giveWhiteLavender",
+      "text": "Thank you... Here, take this White Lavender.",
+      "reward": "white_lavender",
+      "consumeCoins": 2,
+      "next": "end"
+    },
+
+    {
+      "id": "notEnoughCoins",
+      "text": "Oh... you do not have enough coins. Come back later...",
+      "next": "end"
+    },
+
+    {
+      "id": "end",
+      "text": "",
+      "next": null
+    }
+  ]
+}

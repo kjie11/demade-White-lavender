@@ -37,6 +37,15 @@ public class enemyMove : MonoBehaviour
 
 
     protected Vector3 offset=Vector3.back;
+    protected virtual void Awake()
+{
+    if (playerTransform == null)
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+            playerTransform = player.transform;
+    }
+}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()

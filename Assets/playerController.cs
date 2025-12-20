@@ -55,7 +55,8 @@ public float throwForce = 20f;
     public event Action OnAttack;
     [Header("Knife trail effect setting")]
      public TrailRenderer swordTrail;
-
+     public GameObject knife;
+   
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -90,9 +91,9 @@ public float throwForce = 20f;
             nextAttackTime = Time.time + attackCooldown;
         }
            
-           //有问题 先不要后翻滚
+           
             if(Input.GetKeyDown(backRollKey)&&!isRolling&&Time.time>=nextRollTime){
-                // StartCoroutine(BackRoll());
+                
                 BackRoll();
             }
     }
@@ -100,26 +101,23 @@ public float throwForce = 20f;
 
    void ThrowBall()
 {
+    knife.SetActive(false);
     animator.SetTrigger("Throw"); // 播放投掷动画（你已有）
-
+    OnAttack?.Invoke(); //notify exhaustedBar
     // 投掷动作延迟出球（可选）
     StartCoroutine(DelayedThrow());
 }
 
 IEnumerator DelayedThrow()
 {
-    yield return new WaitForSeconds(0.2f); // 与动画同步
+    yield return new WaitForSeconds(0.2f); 
 
     GameObject ball = Instantiate(ballPrefab, throwPoint.position, throwPoint.rotation);
-    // Rigidbody rb = ball.GetComponent<Rigidbody>();
-
-    // if (rb != null)
-    // {
-    //     rb.AddForce(transform.forward * throwForce, ForceMode.Impulse);
-    // }
+   
     ball.GetComponent<ThrowBall>().Throw(transform.forward, throwForce);
 }
     void Attack(){
+            knife.SetActive(true);
             animator.SetTrigger("Attack");
              OnAttack?.Invoke(); //notify exhaustedBar
             Vector3 center=transform.position;
@@ -184,32 +182,19 @@ IEnumerator DelayedThrow()
 
 private IEnumerator BackRollMovement()
     {
-        // float elapsed =0f;
-        // Vector3 startPos=transform.position;
-        // Vector3 endPos=startPos-transform.forward*backRollDistance;
-        // while (elapsed < backRollDuration)
-        // {
-        //     float t=elapsed/backRollDuration;
-        //     transform.position=Vector3.Lerp(startPos,endPos,t);
-        //     elapsed+=Time.deltaTime;
-        //     yield return null;
-        // }
-        // transform.position=endPos;
-        // isRolling=false;
+        
 
         float elapsed = 0f;
     Vector3 startPos = transform.position;
 
-    // 1️⃣ 以镜头方向为基准
+    // backflip toward camera
     Vector3 camForward = Camera.main.transform.forward;
-    camForward.y = 0f;               // 不上下翻
+    camForward.y = 0f;              
     camForward.Normalize();
 
-    Vector3 rollDir = -camForward;   // 镜头正后方
+    Vector3 rollDir = -camForward;   
     Vector3 endPos = startPos + rollDir * backRollDistance;
 
-    // 2️⃣ 让角色面向翻滚方向（可选，但强烈推荐）
-    // transform.rotation = Quaternion.LookRotation(rollDir);
 
     while (elapsed < backRollDuration)
     {
@@ -223,24 +208,19 @@ private IEnumerator BackRollMovement()
     isRolling = false;
     }
 
-// private IEnumerator ResetBackRollAfterDelay(float delay)
-// {
-//     yield return new WaitForSeconds(delay);
-    
-//     isRolling = false;
-// }
+
     bool IsFacingTarget(Transform target, Vector3 center)
     {
         Vector3 toTarget = target.position - center;
         toTarget.y = 0f;
 
-        if (toTarget.sqrMagnitude < 0.0001f) return true; // 几乎同一点
+        if (toTarget.sqrMagnitude < 0.0001f) return true; //ai
 
-        // 只打前方（dot > 0）
+        
         if (requireInFront && Vector3.Dot(transform.forward, toTarget.normalized) <= 0f)
             return false;
 
-        // 角度限制（使用半角比较）
+        
         float angle = Vector3.Angle(transform.forward, toTarget);
         return angle <= attackAngle * 0.5f;
     }

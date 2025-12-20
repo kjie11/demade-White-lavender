@@ -171,11 +171,11 @@ public class Enemy3Move : enemyMove
 }
 
     // ===== 覆盖追随：无动画 =====
-    protected override void followPlayer()
-    {
-        anchor.SetActive(true);
-        agent.destination = playerTransform.position + offset;
-    }
+    // protected override void followPlayer()
+    // {
+    //     anchor.SetActive(true);
+    //     agent.destination = playerTransform.position + offset;
+    // }
 
     // ===== 覆盖攻击：无动画 =====
     // protected override void attack()
@@ -227,13 +227,14 @@ IEnumerator JumpAttack()
         Vector3 horizontal = Vector3.Lerp(start, end, t);
 
         // 垂直抛物线 (Parabola)
-        float y = Mathf.Sin(Mathf.PI * t) * height;
+        // float y = Mathf.Sin(Mathf.PI * t) * height;
+        float y = Mathf.Sin(Mathf.PI * Mathf.Pow(t, 0.7f)) * height;
 
         transform.position = new Vector3(horizontal.x, start.y + y, horizontal.z);
 
         yield return null;
     }
-    
+
     float landingDelay = 0.25f;
     yield return new WaitForSeconds(landingDelay);
 

@@ -105,24 +105,8 @@ public class ExhaustedBar : MonoBehaviour
         exhaustedText.SetActive(false);
         isShowing = false;
     }
-    // IEnumerator ExhaustAnimation()
-    // {
-    //      exhaustedText.SetActive(true);
-    //      float t = 0f;
-    //     while (t < floatDuration)
-    //     {
-    //         float n = t / floatDuration;
-    //         float moveY = moveCurve.Evaluate(n) * moveHeight;
-    //         exhaustedText.transform.position = startPos + Vector3.up * moveY;
-    //         float angle = Mathf.Lerp(startRotation, endRotation, rotateCurve.Evaluate(n));
-    //         exhaustedText.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-    //         t += Time.deltaTime;
-    //         yield return null;
-    //     }
-    //     exhaustedText.SetActive(false);
-    // }
-    IEnumerator ExhaustAnimation()
+   
+    IEnumerator ExhaustAnimation() //ai
 {
     exhaustedText.SetActive(true);
     float t = 0f;
@@ -131,12 +115,12 @@ public class ExhaustedBar : MonoBehaviour
     {
         float n = t / floatDuration;
 
-        // 基于玩家位置更新
+        
         Vector3 basePos = _playerController.transform.position;
         float moveY = moveCurve.Evaluate(n) * moveHeight;
         exhaustedText.transform.position = basePos + new Vector3(0f, moveY, 0f);
 
-        // 先让文字朝向摄像机
+        // text face to camera
         Vector3 camDir = exhaustedText.transform.position - Camera.main.transform.position;
         Quaternion lookRot = Quaternion.LookRotation(camDir);
 
@@ -144,7 +128,7 @@ public class ExhaustedBar : MonoBehaviour
         float angle = Mathf.Lerp(startRotation, endRotation, rotateCurve.Evaluate(n));
         Quaternion spinRot = Quaternion.Euler(0, 0, angle);
 
-        exhaustedText.transform.rotation = lookRot * spinRot; // ✅ 合并两个旋转
+        exhaustedText.transform.rotation = lookRot * spinRot; // 合并两个旋转
 
         t += Time.deltaTime;
         yield return null;
