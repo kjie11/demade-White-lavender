@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -108,12 +108,19 @@ namespace StarterAssets
         // public float walkEffectHold = 0.5f;
         // private float _walkEffectTTL = 0f;    
         // private bool _useLeft = true;  
-public GameObject leftWalkParticle;
-public GameObject rightWalkParticle;
+// public GameObject leftWalkParticle;
+// public GameObject rightWalkParticle;
 
 public float walkEffectHold = 0.9f;
 private float _walkTTL = 0f;      // 本次脚步效果持续时间
 private bool _useLeft = true;     // 本次用左脚，下一次切换
+[Header("Ground Particle")]
+public GameObject groundParticlePrefab;
+public float particleInterval = 0.4f;
+
+private float _particleTimer = 0f;
+
+
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
 #endif
@@ -175,37 +182,31 @@ private bool _useLeft = true;     // 本次用左脚，下一次切换
             JumpAndGravity();
             GroundedCheck();
             Move();
-    //         if (_walkEffectTTL > 0f)
-    // {
-    //     _walkEffectTTL -= Time.deltaTime;
-    //     if (!walkPaticle.activeSelf) walkPaticle.SetActive(true);
-    // }
-    // else
-    // {
-    //     if (walkPaticle.activeSelf) walkPaticle.SetActive(false);
-    // }
+    
     if (_walkTTL > 0f)
 {
     _walkTTL -= Time.deltaTime;
 
-    if (_useLeft)
-    {
-        if (leftWalkParticle && !leftWalkParticle.activeSelf) leftWalkParticle.SetActive(true);
-        // ribbleEffect.SetActive(true);
-        if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
-        //  ribbleEffect.SetActive(false);
-    }
-    else
-    {
-        if (rightWalkParticle && !rightWalkParticle.activeSelf) rightWalkParticle.SetActive(true);
-        if (leftWalkParticle && leftWalkParticle.activeSelf) leftWalkParticle.SetActive(false);
-    }
+    // if (_useLeft)
+    // {
+    //     if (leftWalkParticle && !leftWalkParticle.activeSelf) leftWalkParticle.SetActive(true);
+    //     // ribbleEffect.SetActive(true);
+    //     if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
+    //     //  ribbleEffect.SetActive(false);
+    // }
+    // else
+    // {
+    //     if (rightWalkParticle && !rightWalkParticle.activeSelf) rightWalkParticle.SetActive(true);
+    //     if (leftWalkParticle && leftWalkParticle.activeSelf) leftWalkParticle.SetActive(false);
+    // }
 }
-else
-{
-    if (leftWalkParticle && leftWalkParticle.activeSelf) leftWalkParticle.SetActive(false);
-    if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
-}
+// else
+// {
+//     if (leftWalkParticle && leftWalkParticle.activeSelf) leftWalkParticle.SetActive(false);
+//     if (rightWalkParticle && rightWalkParticle.activeSelf) rightWalkParticle.SetActive(false);
+// }
+SpawnGroundParticle();
+
         }
 
         private void LateUpdate()
@@ -341,6 +342,31 @@ else
             }
         }
 
+        private void SpawnGroundParticle()
+{
+    // 必须在地面上
+    if (!Grounded) return;
+
+    // 必须在移动
+    if (_speed < 0.1f) return;
+
+    _particleTimer -= Time.deltaTime;
+    if (_particleTimer > 0f) return;
+
+    _particleTimer = particleInterval;
+
+    // 在脚下生成
+    Vector3 spawnPos = transform.position;
+    spawnPos.y += 0.05f; // 贴近地面，按你模型调
+
+    GameObject p=Instantiate(
+        groundParticlePrefab,
+        spawnPos,
+        Quaternion.Euler(90f, 0f, 0f) // 如果是平面粒子
+    );
+     Destroy(p, 1.0f); 
+}
+
         private void JumpAndGravity()
         {
             if (Grounded)
@@ -455,4 +481,6 @@ else
             }
         }
     }
+
+    
 }
