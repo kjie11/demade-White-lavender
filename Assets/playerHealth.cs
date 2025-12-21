@@ -32,12 +32,17 @@ public class playerHealth : MonoBehaviour
     {
         UIManager.Instance.RegisterPlayer(this);
     }
+     Blood.OnHealthPackTaken += UpdateHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
         fillImage.fillAmount = currentHealth / maxHealth; // UI HealthBar initialize
+        if (currentHealth > 30)
+        {
+            damagePostProcess.recover();
+        }
     }
     public void TakeDmage(float damage){
         if (currentHealth <= 0) return;
@@ -56,10 +61,7 @@ public class playerHealth : MonoBehaviour
         {
             damagePostProcess.TriggerDamageEffect();
         }
-        else
-        {
-            damagePostProcess.recover();
-        }
+        
     }
     void Die(){
         animator.SetTrigger("Die");
@@ -71,4 +73,21 @@ public class playerHealth : MonoBehaviour
         if (healthBar != null)
             healthBar.value = currentHealth;
     }
+
+    //get the blood and update the health
+    public void UpdateHealth(float healAmount)
+{
+    currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
+
+    OnHealthChanged?.Invoke(currentHealth);  
+    Debug.Log("Heal received: " + healAmount);
+
+    if (healthBar != null)
+        healthBar.value = currentHealth;
+}
+void OnDestroy()
+{
+   Blood.OnHealthPackTaken -= UpdateHealth;
+}
+
 }

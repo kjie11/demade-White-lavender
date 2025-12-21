@@ -9,8 +9,8 @@
 
     {
       "id": "checkCoins",
-      "text": "#CHECK_COINS_2#",
-      "requireCoins": 2,
+      "text": "#CHECK_COINS_20#",
+      "requireCoins": 20,
       "next": "giveWhiteLavender"
     },
 
@@ -18,7 +18,7 @@
       "id": "giveWhiteLavender",
       "text": "Thank you... Here, take this White Lavender.",
       "reward": "white_lavender",
-      "consumeCoins": 2,
+      "consumeCoins": 20,
       "next": "end"
     },
 
