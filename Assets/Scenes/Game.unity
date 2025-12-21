@@ -267,6 +267,7 @@ MonoBehaviour:
   dialogueVoiceClip: {fileID: 8300000, guid: 6ac572413a703f9469df5d393cc19e4a, type: 3}
   configName: dialog_FinalNPC
   coinText: {fileID: 1446696845}
+  isFinalBoss: 1
 --- !u!114 &17493245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19282,6 +19283,7 @@ MonoBehaviour:
   dialogueVoiceClip: {fileID: 8300000, guid: 6ac572413a703f9469df5d393cc19e4a, type: 3}
   configName: dialog_npc
   coinText: {fileID: 0}
+  isFinalBoss: 0
 --- !u!1 &1705116134
 GameObject:
   m_ObjectHideFlags: 0
