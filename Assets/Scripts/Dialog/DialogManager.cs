@@ -303,6 +303,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -431,6 +432,11 @@ public class DialogueManager : MonoBehaviour
     {
         while (!string.IsNullOrEmpty(currentId))
         {
+            if (currentId == "ENDING")
+        {
+            StartCoroutine(PlayEndingSequence());
+            yield break;  // 停止对话系统
+        }
             DialogueNode node = nodeMap[currentId];
             Debug.Log("currentID = " + currentId);
 
@@ -472,6 +478,17 @@ public class DialogueManager : MonoBehaviour
 
         EndDialogue();
     }
+    IEnumerator PlayEndingSequence()
+{
+    pauseMenu.ResumeFromDialogue();   // 解除暂停
+    isPlaying = false;
+
+    // ★ 等 1 秒防止太突兀（可删）
+    yield return new WaitForSeconds(1f);
+
+    // ★ 切换到结局场景
+    SceneManager.LoadScene("End");   // ← 改成你的场景名
+}
 
     IEnumerator HandleCheckCoins(DialogueNode node)
     {
@@ -532,6 +549,7 @@ public class DialogueManager : MonoBehaviour
 
         pauseMenu.ResumeFromDialogue();
         isPlaying = false;
+         SceneManager.LoadScene("End");  
     }
 
     int GetPlayerCoins()

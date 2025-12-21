@@ -114,7 +114,7 @@ public class StaticEnemyHealth : MonoBehaviour
         Debug.Log($"{name} died!");
 
         OnDeath?.Invoke(this);
-
+        AudioManager.Instance.ExitBossArea();
         Destroy(gameObject);
     }
 }

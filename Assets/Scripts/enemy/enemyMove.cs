@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -92,7 +93,7 @@ public class enemyMove : MonoBehaviour
 
     }
      // 🟡 当玩家第一次进入巡逻半径
-    void OnPlayerEnterRange()
+    protected virtual void OnPlayerEnterRange()
     {
         if (alertSound != null && Time.time - lastAlertTime > alertSoundCooldown)
         {
@@ -111,6 +112,26 @@ public class enemyMove : MonoBehaviour
 
 
     }
+    private IEnumerator AttackCoroutine()
+{
+    // ↘ 等待攻击动画真正击中的时刻
+    yield return new WaitForSeconds(1f);  
+
+   playerHealth ph= playerTransform.GetComponent<playerHealth>();
+        if(ph!=null){
+            ph.TakeDmage(attackDamageCount); //todo : random damage account
+        }
+        else{
+            Debug.Log("player had no player health script");
+        }
+
+      
+
+    // ↘ 给一点停顿，模拟攻击硬直
+    yield return new WaitForSeconds(0.2f);
+    Invoke(nameof(ResumeMoveAfterAttack), 0.6f);
+    agent.isStopped = false;
+}
     protected virtual void attack(){
         //enemy stop and face to player
         agent.isStopped = true;
@@ -134,15 +155,17 @@ public class enemyMove : MonoBehaviour
             SafeSetTrigger("Attack");
         }
         // player lose health
-        playerHealth ph= playerTransform.GetComponent<playerHealth>();
-        if(ph!=null){
-            ph.TakeDmage(attackDamageCount); //todo : random damage account
-        }
-        else{
-            Debug.Log("player had no player health script");
-        }
+        // playerHealth ph= playerTransform.GetComponent<playerHealth>();
+        // if(ph!=null){
+        //     ph.TakeDmage(attackDamageCount); //todo : random damage account
+        // }
+        // else{
+        //     Debug.Log("player had no player health script");
+        // }
 
-        Invoke(nameof(ResumeMoveAfterAttack), 0.6f);
+        StartCoroutine(AttackCoroutine());
+
+        // Invoke(nameof(ResumeMoveAfterAttack), 0.6f);
         }
 
 
@@ -153,7 +176,7 @@ public class enemyMove : MonoBehaviour
         // animator.SetTrigger("Walking");
          anchor.SetActive(false);
         agent.destination=patrolPoint;
-
+        
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             waitTimer += Time.deltaTime;

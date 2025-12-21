@@ -109,6 +109,9 @@ public class enemyHealth : MonoBehaviour
         // agent.isStopped = true;
         Debug.Log("in the die");
         OnDeath?.Invoke(this); 
+        AudioManager.Instance.ExitBossArea();
         Destroy(gameObject); // enemy will disappear after 3f when died
+        // Destroy(gameObject, 1.0f);
+       
     }
 }

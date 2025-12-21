@@ -11,7 +11,7 @@ public class playerController : MonoBehaviour
 
     [Header("Back Roll defence")]
     public KeyCode backRollKey=KeyCode.LeftControl;
-    public float backRollDistance=4f;
+    public float backRollDistance=6f;
     public float backRollDuration=0.2f;
      public float backRollCooldown = 1f; 
 
