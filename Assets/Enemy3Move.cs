@@ -92,7 +92,14 @@ private IEnumerator DelayedEnterRange()
     StartCoroutine(JumpAttack());
 }
 
+protected override void followPlayer(){
+        // animator.SetTrigger("Follow");
+         anchor.SetActive(true);
+        // SafeSetTrigger("Follow");
+        // agent.destination=playerTransform.position +offset;
 
+
+    }
 
 //ai
 IEnumerator JumpAttack()

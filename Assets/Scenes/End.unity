@@ -451,8 +451,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0400e7206cbc25c4cb8bacb71c938cb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackScreen: {fileID: 0}
-  endingText: {fileID: 0}
+  blackScreen: {fileID: 998879389}
+  endingText: {fileID: 433557383}
   fadeSpeed: 1.2
   textDelay: 1
   endingDisplayTime: 4
