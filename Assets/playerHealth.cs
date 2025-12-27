@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class playerHealth : MonoBehaviour
@@ -45,7 +46,7 @@ public class playerHealth : MonoBehaviour
         }
     }
     public void TakeDmage(float damage){
-        if (currentHealth <= 0) return;
+        
         if (currentHealth <= 0)
         {
             Die();
@@ -66,6 +67,7 @@ public class playerHealth : MonoBehaviour
     void Die(){
         animator.SetTrigger("Die");
         Debug.Log("player is die");
+        SceneManager.LoadScene("Died");
     }
     //animation for lose heath count and reduce health bar
     void takeDmageAnimation(){
