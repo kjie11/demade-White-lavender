@@ -2,10 +2,11 @@ using UnityEngine;
 using System;
 using System.Collections;
 
+//ai
 public class ExplosionCore : MonoBehaviour
 {
-    public event Action OnExplosionEnd; // 💥 爆炸结束事件
-    public float explosionDuration = 0.8f; // 你的爆炸动画时间
+    public event Action OnExplosionEnd; 
+    public float explosionDuration = 0.8f; 
 
     void Start()
     {

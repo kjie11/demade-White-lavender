@@ -1,18 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
-
 using System;
-
 public class WeaponMenuManager : MonoBehaviour
 {
     public List<GameObject> weaponItems;
-    
     public GameObject knife;
-
     private int currentIndex = 0;
-
     public event Action<GameManager.WeaponType> onWeaponChanged;
-
     private void OnEnable()
     {
         // get the status from gamemanager
@@ -20,6 +14,7 @@ public class WeaponMenuManager : MonoBehaviour
         UpdateSelectionVisuals();
     }
 
+    //ai: How to press key to switch weapon
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha1))
@@ -31,7 +26,7 @@ public class WeaponMenuManager : MonoBehaviour
             Navigate(1);
         }
     }
-
+    
     void Navigate(int direction)
     {
         int newIndex = currentIndex + direction;
@@ -40,7 +35,7 @@ public class WeaponMenuManager : MonoBehaviour
         {
             currentIndex = newIndex;
             UpdateSelectionVisuals();
-            ApplyWeapon(); 
+            ApplyWeapon();
         }
     }
 
@@ -56,24 +51,24 @@ public class WeaponMenuManager : MonoBehaviour
         }
     }
 
+    //ai: how to set the weapon associated with GameManager
     void ApplyWeapon()
     {
         if (currentIndex == 0)
         {
             GameManager.Instance.SetWeapon(GameManager.WeaponType.Knife);
-            
             knife.SetActive(true);
             onWeaponChanged?.Invoke(GameManager.WeaponType.Knife); //notify gamemanager and update the current weapon
         }
         else if (currentIndex == 1)
         {
             GameManager.Instance.SetWeapon(GameManager.WeaponType.ThrowBall);
-            
             knife.SetActive(false);
             onWeaponChanged?.Invoke(GameManager.WeaponType.ThrowBall);//notify gamemanager and update the current weapon
         }
     }
 
+    //ai: how to synchronise from the GameManager
     void SyncFromGameManager()
     {
         switch (GameManager.Instance.currentWeapon)

@@ -1,5 +1,3 @@
-using System;
-using System.Net;
 using UnityEngine;
 
 //manager and reocord  the weapon status, singleton
@@ -13,7 +11,6 @@ public class GameManager : MonoBehaviour
         Knife,
         ThrowBall
     }
-
     public WeaponType currentWeapon = WeaponType.Knife;
 
     private void Awake()
@@ -23,11 +20,9 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-
     private void OnEnable()
     {
         if (weaponMenuManager != null)
@@ -48,22 +43,21 @@ public class GameManager : MonoBehaviour
         SetWeapon(weapon);
     }
 
-   
-
     private void Update()
     {
-        // 按 1
+        // press 1
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SetWeapon(WeaponType.Knife);
         }
-        // 按 2
+        // press 2
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             SetWeapon(WeaponType.ThrowBall);
         }
     }
 
+    // ai: how to write and call set weapon function
     public void SetWeapon(WeaponType weapon)
     {
         if (currentWeapon == weapon)
@@ -77,9 +71,6 @@ public class GameManager : MonoBehaviour
         {
             player.currentWeapon = playerController.WeaponType.ThrowBall;
         }
-        
-
-        Debug.Log("Weapon changed to: " + currentWeapon);
     }
     public WeaponType GetWeapon()
     {
